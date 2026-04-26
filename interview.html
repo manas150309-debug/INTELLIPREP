@@ -211,19 +211,98 @@ let sessionScores = [];
 let currentType = '';
 let sessionActive = false;
 
+const USE_LOCAL_MOCK = true;
+let activeMockQuestions = [];
+
+const MOCK_QUESTION_BANKS = {
+  'DSA': [
+    { question: 'Describe the time and space complexity of your favorite sorting algorithm.', feedback: 'Your explanation should cover best, average, and worst case behavior. Mention whether the algorithm is stable and how it handles different input sizes.' },
+    { question: 'How would you detect a cycle in a linked list? Explain your approach clearly.', feedback: 'A good answer describes using two pointers and explains why the faster pointer will catch up with the slower one in a cycle.' },
+    { question: 'Explain how hashing works and how you would handle hash collisions.', feedback: 'Mention hash functions, buckets, and collision strategies such as chaining or open addressing.' },
+    { question: 'How do you find the maximum depth of a binary tree?', feedback: 'A strong answer includes a recursive or iterative traversal and explains why it visits every node once.' },
+    { question: 'Describe an efficient approach to solve the two-sum problem.', feedback: 'The best response uses a hash map and explains why it reduces the time complexity to linear.' }
+  ],
+  'System Design': [
+    { question: 'How would you design a URL shortening service like Bitly?', feedback: 'An ideal answer talks about API design, data model, scalability, and how you generate short links.' },
+    { question: 'Describe how you would scale a chat application to support millions of concurrent users.', feedback: 'Strong responses mention load balancing, pub/sub systems, horizontal scaling, and state management.' },
+    { question: 'How would you design a recommendation engine for an e-commerce site?', feedback: 'Mention collecting data, similarity measures, candidate generation, and filtering for relevance.' },
+    { question: 'What database would you choose for storing time-series data and why?', feedback: 'Compare relational and NoSQL approaches and explain trade-offs for write-heavy workloads.' },
+    { question: 'How would you make a web service highly available?', feedback: 'Include redundancy, auto-failover, health checks, and disaster recovery strategies.' }
+  ],
+  'Behavioral': [
+    { question: 'Tell me about a time you faced a difficult team challenge and how you handled it.', feedback: 'A strong answer uses STAR: Situation, Task, Action, Result.' },
+    { question: 'Describe a situation where you made a mistake and what you learned.', feedback: 'Good answers are honest, show ownership, and focus on improvement.' },
+    { question: 'How do you prioritize your work when you have multiple deadlines?', feedback: 'Look for clear prioritization criteria, communication, and time management.' },
+    { question: 'Tell me about a time you helped a teammate solve a problem.', feedback: 'Highlight collaboration, empathy, and technical or interpersonal support.' },
+    { question: 'What motivates you when working on a difficult project?', feedback: 'Effective answers connect motivation to impact, learning, and long-term goals.' }
+  ],
+  'Frontend': [
+    { question: 'How would you improve page load performance for a React application?', feedback: 'Cover code splitting, lazy loading, asset optimization, and browser caching.' },
+    { question: 'Explain the difference between CSS Grid and Flexbox and when to use each.', feedback: 'A good answer compares layout use cases and when each one is most appropriate.' },
+    { question: 'How do you handle state management in a large frontend app?', feedback: 'Discuss local state, global state, and tools like Context, Redux, or Zustand.' },
+    { question: 'What are some accessibility considerations for web forms?', feedback: 'Mention labels, keyboard navigation, ARIA attributes, and screen reader support.' },
+    { question: 'How would you debug a layout issue in the browser?', feedback: 'Great answers mention DevTools, inspecting styles, and checking computed layout.' }
+  ],
+  'Backend': [
+    { question: 'How would you design a REST API for a task management app?', feedback: 'Talk about endpoints, request/response shape, authentication, and error handling.' },
+    { question: 'How do you handle database migrations in production?', feedback: 'Good answers describe versioned migrations, backups, and safe deployment.' },
+    { question: 'What is eventual consistency and when is it acceptable?', feedback: 'Explain the difference from strong consistency and real-world trade-offs.' },
+    { question: 'How would you secure an API against unauthorized access?', feedback: 'Mention authentication, authorization, rate limiting, and input validation.' },
+    { question: 'How do you monitor a backend service in production?', feedback: 'Include logging, metrics, alerts, and performance dashboards.' }
+  ],
+  'Full Stack': [
+    { question: 'How do you approach building a full-stack feature from frontend to backend?', feedback: 'Describe requirements, API design, UI flow, and integration testing.' },
+    { question: 'How do you decide whether to move logic to the client or server?', feedback: 'Discuss performance, security, and user experience trade-offs.' },
+    { question: 'How do you keep frontend and backend codebases in sync?', feedback: 'Mention shared contracts, API documentation, and communication between teams.' },
+    { question: 'How do you debug an issue that spans both client and server?', feedback: 'Explain tracing logs, reproducing requests, and isolating layers.' },
+    { question: 'What deployment strategy would you use for a full-stack app?', feedback: 'Discuss CI/CD, staging environments, and rollback planning.' }
+  ]
+};
+
+function getMockQuestions(type) {
+  return MOCK_QUESTION_BANKS[type] || MOCK_QUESTION_BANKS['DSA'];
+}
+
+function mockClaudeResponse() {
+  if (questionCount === 0) {
+    activeMockQuestions = getMockQuestions(currentType);
+    const intro = `Great! Let's begin your ${currentType} interview. I will ask ${MAX_QUESTIONS} questions and provide feedback after each one.`;
+    return `${intro}\n\nQuestion 1: ${activeMockQuestions[0].question}`;
+  }
+
+  const index = Math.min(questionCount - 1, activeMockQuestions.length - 1);
+  const questionItem = activeMockQuestions[index] || activeMockQuestions[activeMockQuestions.length - 1];
+  const score = 6 + Math.floor(Math.random() * 5);
+  const feedback = questionItem.feedback;
+  const nextIndex = Math.min(questionCount, activeMockQuestions.length - 1);
+  const nextQuestion = questionCount < MAX_QUESTIONS ? `Question ${questionCount + 1}: ${activeMockQuestions[nextIndex].question}` : '';
+  const wrapUp = questionCount >= MAX_QUESTIONS ? '\n\nThanks for completing the interview. Your performance shows strong potential — keep practicing to sharpen your answers.' : '';
+
+  return `Score: ${score}/10\n${feedback}${nextQuestion ? '\n\n' + nextQuestion : ''}${wrapUp}`;
+}
+
 async function callClaude(messages) {
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1000,
-      system: SYSTEM_PROMPT,
-      messages: messages
-    })
-  });
-  const data = await response.json();
-  return data.content?.[0]?.text || "I apologize, something went wrong. Please try again.";
+  if (USE_LOCAL_MOCK) {
+    return new Promise(resolve => setTimeout(() => resolve(mockClaudeResponse()), 600));
+  }
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        system: SYSTEM_PROMPT,
+        messages: messages
+      })
+    });
+    const data = await response.json();
+    return data.content?.[0]?.text || "I apologize, something went wrong. Please try again.";
+  } catch (error) {
+    console.warn('AI connection failed, using local mock interviewer.', error);
+    return mockClaudeResponse();
+  }
 }
 
 async function startInterview() {
