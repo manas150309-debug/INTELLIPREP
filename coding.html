@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coding Practice — IntelliPrep</title>
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/coding.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-brand"><span class="brand-icon">⚡</span><span class="brand-name">IntelliPrep</span></div>
+  <div class="nav-links">
+    <a href="../index.html">Home</a>
+    <a href="coding.html" class="active">Practice</a>
+    <a href="interview.html">Interview</a>
+    <a href="resume.html">Resume</a>
+    <a href="dashboard.html">Dashboard</a>
+  </div>
+  <div class="nav-actions">
+    <button class="btn-ghost" onclick="parent.showAuthModal ? parent.showAuthModal('login') : null">Login</button>
+    <button class="btn-primary">Get Started</button>
+  </div>
+</nav>
+
+<div class="coding-layout">
+
+  <!-- SIDEBAR: Problem List -->
+  <aside class="problems-sidebar">
+    <div class="sidebar-header">
+      <h2>Problems</h2>
+      <div class="sidebar-filters">
+        <select id="diffFilter" onchange="filterProblems()" class="filter-select">
+          <option value="all">All Levels</option>
+          <option value="Easy">Easy</option>
+          <option value="Medium">Medium</option>
+          <option value="Hard">Hard</option>
+        </select>
+        <select id="topicFilter" onchange="filterProblems()" class="filter-select">
+          <option value="all">All Topics</option>
+          <option value="Array">Array</option>
+          <option value="String">String</option>
+          <option value="Tree">Tree</option>
+          <option value="Graph">Graph</option>
+          <option value="DP">DP</option>
+          <option value="Linked List">Linked List</option>
+        </select>
+      </div>
+      <div class="progress-summary">
+        <span id="solvedCount">0</span>/50 solved
+        <div class="progress-bar-wrap" style="margin-top:6px">
+          <div class="progress-bar" id="solvedProgress" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+    <div class="problem-list" id="problemList"></div>
+  </aside>
+
+  <!-- MAIN: Code Editor -->
+  <main class="code-area">
+    <div class="problem-header" id="problemHeader">
+      <div>
+        <h2 id="problemTitle">Select a Problem</h2>
+        <div id="problemMeta" style="display:flex;gap:0.75rem;margin-top:0.5rem;align-items:center"></div>
+      </div>
+      <div style="display:flex;gap:0.75rem;">
+        <button class="btn-ghost" onclick="showHint()">💡 Hint</button>
+        <button class="btn-ghost" onclick="showSolution()">👁 Solution</button>
+        <button class="btn-primary" onclick="runCode()">▶ Run Code</button>
+      </div>
+    </div>
+
+    <div class="problem-desc-panel" id="problemDesc">
+      <p style="color:var(--text-muted)">👈 Select a problem from the sidebar to begin.</p>
+    </div>
+
+    <div class="editor-wrap">
+      <div class="editor-bar">
+        <select id="langSelect" class="filter-select" style="font-size:0.82rem">
+          <option value="python">Python</option>
+          <option value="javascript">JavaScript</option>
+          <option value="java">Java</option>
+          <option value="cpp">C++</option>
+        </select>
+        <span style="color:var(--text-dim);font-size:0.8rem">Code Editor</span>
+      </div>
+      <textarea id="codeEditor" class="code-editor" placeholder="# Write your solution here...
+# Select a problem from the sidebar to start"></textarea>
+    </div>
+
+    <div class="output-panel" id="outputPanel">
+      <div class="output-bar">
+        <span>Output</span>
+        <button onclick="clearOutput()" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:0.8rem">Clear</button>
+      </div>
+      <div id="outputContent" class="output-content">
+        <span style="color:var(--text-dim)">Run your code to see output...</span>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../js/main.js"></script>
+<script>
+
+const PROBLEMS = [
+  { id:1, title:"Two Sum", difficulty:"Easy", topic:"Array", solved:false,
+    desc:"Given an array of integers <code>nums</code> and an integer <code>target</code>, return indices of the two numbers such that they add up to target.<br><br><strong>Example:</strong><br>Input: nums = [2,7,11,15], target = 9<br>Output: [0,1]",
+    hint:"Use a hash map to store seen values and their indices.",
+    solution:`def twoSum(nums, target):
+    seen = {}
+    for i, n in enumerate(nums):
+        diff = target - n
+        if diff in seen:
+            return [seen[diff], i]
+        seen[n] = i`,
+    starterCode:`def twoSum(nums, target):
+    # Your solution here
+    pass
+
+# Test
+print(twoSum([2,7,11,15], 9))  # [0,1]`
+  },
+  { id:2, title:"Reverse Linked List", difficulty:"Easy", topic:"Linked List", solved:false,
+    desc:"Given the head of a singly linked list, reverse the list and return the reversed list.<br><br><strong>Example:</strong><br>Input: 1 → 2 → 3 → 4 → 5<br>Output: 5 → 4 → 3 → 2 → 1",
+    hint:"Use three pointers: prev, curr, next to iteratively reverse links.",
+    solution:`def reverseList(head):
+    prev = None
+    curr = head
+    while curr:
+        nxt = curr.next
+        curr.next = prev
+        prev = curr
+        curr = nxt
+    return prev`,
+    starterCode:`class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def reverseList(head):
+    # Your solution here
+    pass`
+  },
+  { id:3, title:"Valid Parentheses", difficulty:"Easy", topic:"String", solved:false,
+    desc:"Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.<br><br><strong>Example:</strong><br>Input: s = \"()[]{}\"<br>Output: true",
+    hint:"Use a stack. Push open brackets, pop and check for closing brackets.",
+    solution:`def isValid(s):
+    stack = []
+    mapping = {')':'(', '}':'{', ']':'['}
+    for char in s:
+        if char in mapping:
+            top = stack.pop() if stack else '#'
+            if mapping[char] != top:
+                return False
+        else:
+            stack.append(char)
+    return not stack`,
+    starterCode:`def isValid(s):
+    # Your solution here
+    pass
+
+print(isValid("()[]{}"))  # True
+print(isValid("(]"))      # False`
+  },
+  { id:4, title:"Maximum Depth of Binary Tree", difficulty:"Easy", topic:"Tree", solved:false,
+    desc:"Given the root of a binary tree, return its maximum depth (longest path from root to farthest leaf node).<br><br><strong>Example:</strong><br>Input: [3,9,20,null,null,15,7]<br>Output: 3",
+    hint:"Use recursion: depth = 1 + max(left_depth, right_depth).",
+    solution:`def maxDepth(root):
+    if not root:
+        return 0
+    return 1 + max(maxDepth(root.left), maxDepth(root.right))`,
+    starterCode:`class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def maxDepth(root):
+    # Your solution here
+    pass`
+  },
+  { id:5, title:"Climbing Stairs", difficulty:"Easy", topic:"DP", solved:false,
+    desc:"You are climbing a staircase with n steps. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?<br><br><strong>Example:</strong><br>Input: n = 3<br>Output: 3",
+    hint:"This is essentially a Fibonacci sequence. dp[n] = dp[n-1] + dp[n-2]",
+    solution:`def climbStairs(n):
+    if n <= 2:
+        return n
+    a, b = 1, 2
+    for _ in range(3, n+1):
+        a, b = b, a+b
+    return b`,
+    starterCode:`def climbStairs(n):
+    # Your solution here
+    pass
+
+print(climbStairs(3))  # 3
+print(climbStairs(5))  # 8`
+  },
+  { id:6, title:"3Sum", difficulty:"Medium", topic:"Array", solved:false,
+    desc:"Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i ≠ j, i ≠ k, and j ≠ k, and nums[i] + nums[j] + nums[k] == 0.<br><br><strong>Example:</strong><br>Input: [-1,0,1,2,-1,-4]<br>Output: [[-1,-1,2],[-1,0,1]]",
+    hint:"Sort the array, then use two pointers for each fixed element.",
+    solution:`def threeSum(nums):
+    nums.sort()
+    result = []
+    for i in range(len(nums)-2):
+        if i > 0 and nums[i] == nums[i-1]:
+            continue
+        l, r = i+1, len(nums)-1
+        while l < r:
+            s = nums[i]+nums[l]+nums[r]
+            if s == 0:
+                result.append([nums[i],nums[l],nums[r]])
+                while l < r and nums[l]==nums[l+1]: l+=1
+                while l < r and nums[r]==nums[r-1]: r-=1
+                l+=1; r-=1
+            elif s < 0: l+=1
+            else: r-=1
+    return result`,
+    starterCode:`def threeSum(nums):
+    # Your solution here
+    pass
+
+print(threeSum([-1,0,1,2,-1,-4]))  # [[-1,-1,2],[-1,0,1]]`
+  },
+  { id:7, title:"Longest Substring Without Repeating Characters", difficulty:"Medium", topic:"String", solved:false,
+    desc:"Given a string s, find the length of the longest substring without repeating characters.<br><br><strong>Example:</strong><br>Input: s = \"abcabcbb\"<br>Output: 3 (abc)",
+    hint:"Use a sliding window with a set to track characters.",
+    solution:`def lengthOfLongestSubstring(s):
+    chars = set()
+    l = maxLen = 0
+    for r in range(len(s)):
+        while s[r] in chars:
+            chars.remove(s[l]); l+=1
+        chars.add(s[r])
+        maxLen = max(maxLen, r-l+1)
+    return maxLen`,
+    starterCode:`def lengthOfLongestSubstring(s):
+    # Your solution here
+    pass
+
+print(lengthOfLongestSubstring("abcabcbb"))  # 3`
+  },
+  { id:8, title:"Number of Islands", difficulty:"Medium", topic:"Graph", solved:false,
+    desc:"Given an m x n 2D binary grid representing a map of '1's (land) and '0's (water), return the number of islands.<br><br><strong>Example:</strong><br>Input: grid with connected 1s<br>Output: 3",
+    hint:"Use DFS/BFS. When you find a '1', mark all connected '1's as visited.",
+    solution:`def numIslands(grid):
+    count = 0
+    def dfs(i, j):
+        if i<0 or j<0 or i>=len(grid) or j>=len(grid[0]) or grid[i][j]!='1':
+            return
+        grid[i][j] = '0'
+        dfs(i+1,j); dfs(i-1,j); dfs(i,j+1); dfs(i,j-1)
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            if grid[i][j]=='1':
+                dfs(i,j); count+=1
+    return count`,
+    starterCode:`def numIslands(grid):
+    # Your solution here
+    pass`
+  },
+  { id:9, title:"Merge Intervals", difficulty:"Medium", topic:"Array", solved:false,
+    desc:"Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals.<br><br><strong>Example:</strong><br>Input: [[1,3],[2,6],[8,10],[15,18]]<br>Output: [[1,6],[8,10],[15,18]]",
+    hint:"Sort by start time, then greedily merge overlapping intervals.",
+    solution:`def merge(intervals):
+    intervals.sort()
+    merged = [intervals[0]]
+    for s, e in intervals[1:]:
+        if s <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], e)
+        else:
+            merged.append([s,e])
+    return merged`,
+    starterCode:`def merge(intervals):
+    # Your solution here
+    pass
+
+print(merge([[1,3],[2,6],[8,10],[15,18]]))`
+  },
+  { id:10, title:"Trapping Rain Water", difficulty:"Hard", topic:"Array", solved:false,
+    desc:"Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.<br><br><strong>Example:</strong><br>Input: [0,1,0,2,1,0,1,3,2,1,2,1]<br>Output: 6",
+    hint:"Use two pointers. Track left max and right max as you scan inward.",
+    solution:`def trap(height):
+    l, r = 0, len(height)-1
+    leftMax = rightMax = water = 0
+    while l < r:
+        if height[l] < height[r]:
+            if height[l] >= leftMax: leftMax = height[l]
+            else: water += leftMax - height[l]
+            l += 1
+        else:
+            if height[r] >= rightMax: rightMax = height[r]
+            else: water += rightMax - height[r]
+            r -= 1
+    return water`,
+    starterCode:`def trap(height):
+    # Your solution here
+    pass
+
+print(trap([0,1,0,2,1,0,1,3,2,1,2,1]))  # 6`
+  },
+];
+
+let currentProblem = null;
+const solvedSet = new Set(JSON.parse(localStorage.getItem('intelliprep_solved') || '[]'));
+
+function renderProblemList() {
+  const diff = document.getElementById('diffFilter').value;
+  const topic = document.getElementById('topicFilter').value;
+  const list = document.getElementById('problemList');
+
+  const filtered = PROBLEMS.filter(p =>
+    (diff === 'all' || p.difficulty === diff) &&
+    (topic === 'all' || p.topic === topic)
+  );
+
+  list.innerHTML = filtered.map(p => `
+    <div class="problem-item ${currentProblem?.id === p.id ? 'active' : ''}" onclick="loadProblem(${p.id})">
+      <div class="problem-item-info">
+        <span class="problem-check">${solvedSet.has(p.id) ? '✅' : '⭕'}</span>
+        <span class="problem-name">${p.title}</span>
+      </div>
+      <div style="display:flex;gap:0.5rem;align-items:center">
+        <span class="tag tag-${p.difficulty.toLowerCase()}">${p.difficulty}</span>
+        <span class="badge-company">${p.topic}</span>
+      </div>
+    </div>
+  `).join('');
+
+  // Update progress
+  document.getElementById('solvedCount').textContent = solvedSet.size;
+  document.getElementById('solvedProgress').style.width = `${(solvedSet.size/PROBLEMS.length)*100}%`;
+}
+
+function filterProblems() { renderProblemList(); }
+
+function loadProblem(id) {
+  currentProblem = PROBLEMS.find(p => p.id === id);
+  if (!currentProblem) return;
+
+  document.getElementById('problemTitle').textContent = `${currentProblem.id}. ${currentProblem.title}`;
+  document.getElementById('problemMeta').innerHTML = `
+    <span class="tag tag-${currentProblem.difficulty.toLowerCase()}">${currentProblem.difficulty}</span>
+    <span class="badge-company">${currentProblem.topic}</span>
+    ${solvedSet.has(id) ? '<span style="color:var(--success);font-size:0.85rem">✓ Solved</span>' : ''}
+  `;
+  document.getElementById('problemDesc').innerHTML = `<p>${currentProblem.desc}</p>`;
+  document.getElementById('codeEditor').value = currentProblem.starterCode || '';
+  document.getElementById('outputContent').innerHTML = '<span style="color:var(--text-dim)">Run your code to see output...</span>';
+  renderProblemList();
+}
+
+function runCode() {
+  if (!currentProblem) { showToast('⚠️ Select a problem first!'); return; }
+  const output = document.getElementById('outputContent');
+  output.innerHTML = '<span style="color:var(--accent-3)">⏳ Running...</span>';
+
+  setTimeout(() => {
+    // Simulate output
+    const passed = Math.random() > 0.3;
+    if (passed) {
+      output.innerHTML = `<span style="color:var(--success)">✅ All test cases passed!</span>
+<br><br><code style="color:var(--text-muted);font-size:0.82rem">Runtime: ${Math.floor(Math.random()*50+10)}ms | Memory: ${Math.floor(Math.random()*5+2)}MB</code>`;
+      solvedSet.add(currentProblem.id);
+      localStorage.setItem('intelliprep_solved', JSON.stringify([...solvedSet]));
+      renderProblemList();
+      // Update stats
+      const stats = JSON.parse(localStorage.getItem('intelliprep_stats') || '{}');
+      stats.solved = solvedSet.size;
+      localStorage.setItem('intelliprep_stats', JSON.stringify(stats));
+    } else {
+      output.innerHTML = `<span style="color:var(--danger)">❌ Wrong Answer</span>
+<br><br><code style="color:var(--text-muted);font-size:0.82rem">Expected: [0,1]<br>Got: None</code>
+<br><br><span style="color:var(--text-dim)">Hint: Check your logic and edge cases.</span>`;
+    }
+  }, 1000);
+}
+
+function showHint() {
+  if (!currentProblem) { showToast('⚠️ Select a problem first!'); return; }
+  const output = document.getElementById('outputContent');
+  output.innerHTML = `<span style="color:var(--accent-3)">💡 Hint:</span><br><br>${currentProblem.hint}`;
+}
+
+function showSolution() {
+  if (!currentProblem) { showToast('⚠️ Select a problem first!'); return; }
+  const output = document.getElementById('outputContent');
+  output.innerHTML = `<span style="color:var(--accent-2)">👁 Solution:</span><br><br><pre style="color:var(--accent);font-size:0.82rem;line-height:1.6">${currentProblem.solution}</pre>`;
+}
+
+function clearOutput() {
+  document.getElementById('outputContent').innerHTML = '<span style="color:var(--text-dim)">Run your code to see output...</span>';
+}
+
+// Init
+renderProblemList();
+loadProblem(1);
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+</script>
+</body>
+</html>
