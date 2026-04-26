@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — IntelliPrep</title>
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-brand"><span class="brand-icon">⚡</span><span class="brand-name">IntelliPrep</span></div>
+  <div class="nav-links">
+    <a href="../index.html">Home</a>
+    <a href="coding.html">Practice</a>
+    <a href="interview.html">Interview</a>
+    <a href="resume.html">Resume</a>
+    <a href="dashboard.html" class="active">Dashboard</a>
+  </div>
+  <div class="nav-actions">
+    <button class="btn-primary">Get Started</button>
+  </div>
+</nav>
+
+<div class="dashboard-content">
+
+  <!-- HEADER -->
+  <div class="dash-header">
+    <div>
+      <h1>📊 Performance Dashboard</h1>
+      <p>Track your progress across all IntelliPrep modules.</p>
+    </div>
+    <div class="dash-date" id="dashDate"></div>
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="kpi-grid" id="kpiGrid">
+    <div class="kpi-card">
+      <div class="kpi-icon">💻</div>
+      <div class="kpi-info">
+        <div class="kpi-num" id="kpiSolved">0</div>
+        <div class="kpi-label">Problems Solved</div>
+      </div>
+      <div class="kpi-progress">
+        <div class="progress-bar-wrap"><div class="progress-bar" id="kpiSolvedBar" style="width:0%"></div></div>
+        <span class="kpi-sub" id="kpiSolvedSub">out of 50</span>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon">🤖</div>
+      <div class="kpi-info">
+        <div class="kpi-num" id="kpiInterviews">0</div>
+        <div class="kpi-label">Mock Interviews</div>
+      </div>
+      <div class="kpi-progress">
+        <div class="kpi-sub" id="kpiInterviewSub">Start your first interview</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon">🎯</div>
+      <div class="kpi-info">
+        <div class="kpi-num" id="kpiScore">—</div>
+        <div class="kpi-label">Avg Interview Score</div>
+      </div>
+      <div class="kpi-progress">
+        <div class="kpi-sub" id="kpiScoreSub">Complete an interview to track</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon">📄</div>
+      <div class="kpi-info">
+        <div class="kpi-num" id="kpiResume">—</div>
+        <div class="kpi-label">Resume Status</div>
+      </div>
+      <div class="kpi-progress">
+        <div class="kpi-sub" id="kpiResumeSub">Upload to analyze</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="dash-grid">
+
+    <!-- LEFT COL -->
+    <div class="dash-col">
+
+      <!-- Activity Chart (canvas-based bar chart) -->
+      <div class="dash-card">
+        <div class="card-header">
+          <h3>Coding Activity</h3>
+          <span class="card-sub">Last 7 days</span>
+        </div>
+        <canvas id="activityChart" height="160"></canvas>
+      </div>
+
+      <!-- Topic Breakdown -->
+      <div class="dash-card">
+        <div class="card-header">
+          <h3>Topic Mastery</h3>
+          <span class="card-sub">Based on solved problems</span>
+        </div>
+        <div class="topic-list" id="topicList"></div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COL -->
+    <div class="dash-col">
+
+      <!-- Interview History -->
+      <div class="dash-card">
+        <div class="card-header">
+          <h3>Interview History</h3>
+          <a href="interview.html" class="card-link">+ New Session</a>
+        </div>
+        <div id="interviewHistory" class="history-list"></div>
+      </div>
+
+      <!-- Recommended Topics -->
+      <div class="dash-card">
+        <div class="card-header">
+          <h3>📚 Recommended for You</h3>
+        </div>
+        <div class="recommendations" id="recommendations"></div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="dash-card">
+        <div class="card-header"><h3>Quick Actions</h3></div>
+        <div class="quick-actions">
+          <a href="coding.html" class="qa-item">
+            <span class="qa-icon">💻</span>
+            <div><div class="qa-title">Continue Practicing</div><div class="qa-sub">DSA Problems</div></div>
+            <span class="qa-arrow">→</span>
+          </a>
+          <a href="interview.html" class="qa-item">
+            <span class="qa-icon">🤖</span>
+            <div><div class="qa-title">Mock Interview</div><div class="qa-sub">AI-powered session</div></div>
+            <span class="qa-arrow">→</span>
+          </a>
+          <a href="resume.html" class="qa-item">
+            <span class="qa-icon">📄</span>
+            <div><div class="qa-title">Analyze Resume</div><div class="qa-sub">Get ATS score</div></div>
+            <span class="qa-arrow">→</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="../js/main.js"></script>
+<script>
+
+// Load stats from localStorage
+const stats = JSON.parse(localStorage.getItem('intelliprep_stats') || '{}');
+const solved = JSON.parse(localStorage.getItem('intelliprep_solved') || '[]');
+
+// Date
+document.getElementById('dashDate').textContent = new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+// KPIs
+document.getElementById('kpiSolved').textContent = solved.length;
+document.getElementById('kpiSolvedBar').style.width = (solved.length/50*100) + '%';
+document.getElementById('kpiSolvedSub').textContent = `${solved.length}/50 problems`;
+
+const interviews = stats.interviews || 0;
+document.getElementById('kpiInterviews').textContent = interviews;
+document.getElementById('kpiInterviewSub').textContent = interviews > 0 ? `${interviews} session${interviews>1?'s':''} completed` : 'Start your first interview';
+
+const avgScore = stats.avgScore || stats.lastScore;
+document.getElementById('kpiScore').textContent = avgScore ? avgScore + '%' : '—';
+document.getElementById('kpiScoreSub').textContent = avgScore ? `Last: ${stats.lastScore || avgScore}%` : 'Complete an interview to track';
+
+const resumeAnalyzed = stats.resumeAnalyzed;
+document.getElementById('kpiResume').textContent = resumeAnalyzed ? '✓' : '—';
+document.getElementById('kpiResumeSub').textContent = resumeAnalyzed ? 'Resume analyzed!' : 'Upload to analyze';
+
+// Activity Chart (simple canvas bars)
+const canvas = document.getElementById('activityChart');
+const ctx = canvas.getContext('2d');
+const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const activity = days.map(() => Math.floor(Math.random() * 8));
+// Add real solved count to today
+activity[new Date().getDay() === 0 ? 6 : new Date().getDay()-1] = Math.min(8, solved.length % 8 + 1);
+
+const W = canvas.offsetWidth || 500;
+canvas.width = W;
+const barW = (W - 60) / days.length - 8;
+ctx.clearRect(0,0,W,160);
+
+days.forEach((day, i) => {
+  const x = 30 + i * ((W-60)/days.length);
+  const h = (activity[i] / 8) * 110;
+  const y = 130 - h;
+
+  // Bar
+  const grad = ctx.createLinearGradient(0, y, 0, 130);
+  grad.addColorStop(0, '#6ee7b7');
+  grad.addColorStop(1, '#3b82f6');
+  ctx.fillStyle = activity[i] > 0 ? grad : 'rgba(255,255,255,0.05)';
+  ctx.beginPath();
+  ctx.roundRect(x, y, barW, h || 4, 4);
+  ctx.fill();
+
+  // Label
+  ctx.fillStyle = '#4a5568';
+  ctx.font = '11px DM Sans';
+  ctx.textAlign = 'center';
+  ctx.fillText(day, x + barW/2, 150);
+
+  if (activity[i] > 0) {
+    ctx.fillStyle = '#6ee7b7';
+    ctx.font = 'bold 11px DM Sans';
+    ctx.fillText(activity[i], x + barW/2, y - 5);
+  }
+});
+
+// Topic Mastery
+const topics = [
+  { name: 'Arrays', pct: solved.length > 0 ? Math.min(100, solved.length * 12) : 10 },
+  { name: 'Strings', pct: solved.length > 2 ? 65 : 20 },
+  { name: 'Trees', pct: solved.length > 3 ? 50 : 10 },
+  { name: 'Dynamic Programming', pct: solved.length > 4 ? 40 : 5 },
+  { name: 'Graphs', pct: solved.length > 7 ? 45 : 8 },
+];
+
+document.getElementById('topicList').innerHTML = topics.map(t => `
+  <div class="topic-item">
+    <div class="topic-name-row">
+      <span class="topic-name">${t.name}</span>
+      <span class="topic-pct">${t.pct}%</span>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar" style="width:${t.pct}%"></div>
+    </div>
+  </div>
+`).join('');
+
+// Interview History (simulated)
+const historyData = interviews > 0 ? [
+  { type: 'DSA Interview', score: stats.lastScore || 75, date: 'Today', badge: 'DSA' },
+] : [];
+
+if (historyData.length === 0) {
+  document.getElementById('interviewHistory').innerHTML = '<p style="color:var(--text-dim);font-size:0.85rem;padding:1rem 0">No interviews yet. <a href="interview.html" style="color:var(--accent)">Start one now →</a></p>';
+} else {
+  document.getElementById('interviewHistory').innerHTML = historyData.map(h => `
+    <div class="history-item">
+      <div>
+        <div class="history-type">${h.type}</div>
+        <div class="history-date">${h.date}</div>
+      </div>
+      <div class="history-score ${h.score >= 75 ? 'score-good' : h.score >= 55 ? 'score-med' : 'score-low'}">${h.score}%</div>
+    </div>
+  `).join('');
+}
+
+// Recommendations
+const recs = [
+  { icon: '🔗', title: 'Linked Lists', desc: 'Practice reversal, cycles, merge', tag: 'Easy', href: 'coding.html' },
+  { icon: '🌳', title: 'Binary Trees', desc: 'DFS, BFS, traversal patterns', tag: 'Medium', href: 'coding.html' },
+  { icon: '🎤', title: 'Behavioral Interview', desc: 'STAR method practice', tag: 'Interview', href: 'interview.html' },
+];
+
+document.getElementById('recommendations').innerHTML = recs.map(r => `
+  <a href="${r.href}" class="rec-item">
+    <span class="rec-icon">${r.icon}</span>
+    <div class="rec-info">
+      <div class="rec-title">${r.title}</div>
+      <div class="rec-desc">${r.desc}</div>
+    </div>
+    <span class="tag ${r.tag === 'Easy' ? 'tag-easy' : r.tag === 'Medium' ? 'tag-medium' : 'tag-medium'}">${r.tag}</span>
+  </a>
+`).join('');
+</script>
+</body>
+</html>
