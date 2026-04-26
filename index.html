@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IntelliPrep — AI Career & Interview Preparation</title>
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="navbar">
+  <div class="nav-brand">
+    <span class="brand-icon">⚡</span>
+    <span class="brand-name">IntelliPrep</span>
+  </div>
+  <div class="nav-links">
+    <a href="index.html" class="active">Home</a>
+    <a href="pages/coding.html">Practice</a>
+    <a href="pages/interview.html">Interview</a>
+    <a href="pages/resume.html">Resume</a>
+    <a href="pages/dashboard.html">Dashboard</a>
+  </div>
+  <div class="nav-actions">
+    <button class="btn-ghost" onclick="showAuthModal('login')">Login</button>
+    <button class="btn-primary" onclick="showAuthModal('signup')">Get Started</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="grid-overlay"></div>
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      AI-Powered Interview Platform
+    </div>
+    <h1 class="hero-title">
+      Land Your<br />
+      <span class="title-accent">Dream Job</span><br />
+      With AI Precision
+    </h1>
+    <p class="hero-sub">
+      IntelliPrep combines coding practice, AI mock interviews, resume analysis,
+      and smart job recommendations — your complete career launch platform.
+    </p>
+    <div class="hero-cta">
+      <a href="pages/interview.html" class="btn-primary btn-lg">Start AI Interview</a>
+      <a href="pages/coding.html" class="btn-outline btn-lg">Practice Coding</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">500+</span><span class="stat-label">DSA Problems</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num">AI</span><span class="stat-label">Mock Interviews</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num">NLP</span><span class="stat-label">Resume Analysis</span></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="terminal-card">
+      <div class="terminal-bar">
+        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+        <span class="terminal-title">intelliprep_ai.py</span>
+      </div>
+      <div class="terminal-body">
+        <div class="t-line"><span class="t-kw">import</span> intelliprep</div>
+        <div class="t-line t-comment"># Start your AI interview session</div>
+        <div class="t-line"><span class="t-var">session</span> = intelliprep.<span class="t-fn">Interview</span>()</div>
+        <div class="t-line t-empty"></div>
+        <div class="t-line"><span class="t-var">q</span> = session.<span class="t-fn">ask</span>(<span class="t-str">"DSA"</span>)</div>
+        <div class="t-line t-comment"># "Explain two sum using a hashmap"</div>
+        <div class="t-line t-empty"></div>
+        <div class="t-line"><span class="t-var">score</span> = session.<span class="t-fn">evaluate</span>(<span class="t-var">q</span>)</div>
+        <div class="t-line t-comment"># Score: 92/100 ✓ Excellent!</div>
+        <div class="t-cursor">█</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="section-header">
+    <span class="section-label">What We Offer</span>
+    <h2>Everything You Need to Succeed</h2>
+  </div>
+  <div class="features-grid">
+    <a href="pages/coding.html" class="feature-card">
+      <div class="feature-icon">💻</div>
+      <h3>Coding Practice</h3>
+      <p>500+ curated DSA problems from easy to hard. Linked lists, trees, graphs, dynamic programming and more.</p>
+      <div class="feature-tag">LeetCode-style</div>
+    </a>
+    <a href="pages/interview.html" class="feature-card feature-card--highlight">
+      <div class="feature-icon">🤖</div>
+      <h3>AI Mock Interview</h3>
+      <p>Chat with our AI interviewer powered by Claude. Get real-time feedback, scoring, and improvement tips.</p>
+      <div class="feature-tag">Powered by Claude AI</div>
+    </a>
+    <a href="pages/resume.html" class="feature-card">
+      <div class="feature-icon">📄</div>
+      <h3>Resume Analyzer</h3>
+      <p>Upload your resume and get AI-powered keyword analysis, ATS score, and actionable improvements.</p>
+      <div class="feature-tag">NLP Analysis</div>
+    </a>
+    <a href="pages/dashboard.html" class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>Performance Dashboard</h3>
+      <p>Track your progress across all modules. Visualize strengths, weaknesses, and growth over time.</p>
+      <div class="feature-tag">Analytics</div>
+    </a>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-it-works">
+  <div class="section-header">
+    <span class="section-label">Process</span>
+    <h2>How IntelliPrep Works</h2>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h4>Create Your Profile</h4>
+      <p>Sign up and set your target role, skill level, and preferred companies.</p>
+    </div>
+    <div class="step-arrow">→</div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h4>Practice & Prepare</h4>
+      <p>Solve coding problems, attend AI mock interviews, and optimize your resume.</p>
+    </div>
+    <div class="step-arrow">→</div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h4>Get Feedback</h4>
+      <p>Receive instant AI feedback on your answers, code quality, and communication.</p>
+    </div>
+    <div class="step-arrow">→</div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <h4>Land the Job</h4>
+      <p>Apply with confidence using personalized job recommendations and a polished resume.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-brand">
+    <span class="brand-icon">⚡</span> IntelliPrep
+  </div>
+  <p class="footer-sub">AI-powered career preparation for the next generation of engineers.</p>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="pages/coding.html">Coding</a>
+    <a href="pages/interview.html">Interview</a>
+    <a href="pages/resume.html">Resume</a>
+    <a href="pages/dashboard.html">Dashboard</a>
+  </div>
+  <p class="footer-copy">© 2025 IntelliPrep. Built with ❤️ for students.</p>
+</footer>
+
+<!-- AUTH MODAL -->
+<div id="authModal" class="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="loginTab" onclick="switchTab('login')">Login</button>
+      <button class="modal-tab" id="signupTab" onclick="switchTab('signup')">Sign Up</button>
+    </div>
+    <div id="loginForm">
+      <h3>Welcome Back</h3>
+      <input type="email" placeholder="Email address" class="modal-input" />
+      <input type="password" placeholder="Password" class="modal-input" />
+      <button class="btn-primary w-full" onclick="handleAuth()">Login</button>
+    </div>
+    <div id="signupForm" style="display:none">
+      <h3>Create Account</h3>
+      <input type="text" placeholder="Full name" class="modal-input" />
+      <input type="email" placeholder="Email address" class="modal-input" />
+      <input type="password" placeholder="Password" class="modal-input" />
+      <select class="modal-input">
+        <option>Target Role: Software Engineer</option>
+        <option>Target Role: Data Scientist</option>
+        <option>Target Role: Frontend Developer</option>
+        <option>Target Role: Backend Developer</option>
+        <option>Target Role: Full Stack Developer</option>
+      </select>
+      <button class="btn-primary w-full" onclick="handleAuth()">Create Account</button>
+    </div>
+    <button class="modal-close" onclick="closeAuthModal()">✕</button>
+  </div>
+</div>
+
+<script src="js/main.js"></script>
+</body>
+</html>
