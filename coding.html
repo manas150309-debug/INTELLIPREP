@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Coding Practice — IntelliPrep</title>
-  <link rel="stylesheet" href="../css/main.css" />
-  <link rel="stylesheet" href="../css/coding.css" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="coding.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
 </head>
@@ -14,15 +14,15 @@
 <nav class="navbar">
   <div class="nav-brand"><span class="brand-icon">⚡</span><span class="brand-name">IntelliPrep</span></div>
   <div class="nav-links">
-    <a href="../index.html">Home</a>
+    <a href="index.html">Home</a>
     <a href="coding.html" class="active">Practice</a>
     <a href="interview.html">Interview</a>
     <a href="resume.html">Resume</a>
     <a href="dashboard.html">Dashboard</a>
   </div>
   <div class="nav-actions">
-    <button class="btn-ghost" onclick="parent.showAuthModal ? parent.showAuthModal('login') : null">Login</button>
-    <button class="btn-primary">Get Started</button>
+    <button class="btn-ghost" onclick="window.location.href='index.html'">Login</button>
+    <button class="btn-primary" onclick="window.location.href='index.html'">Get Started</button>
   </div>
 </nav>
 
@@ -103,7 +103,7 @@
   </main>
 </div>
 
-<script src="../js/main.js"></script>
+<script src="script.js"></script>
 <script>
 
 const PROBLEMS = [
